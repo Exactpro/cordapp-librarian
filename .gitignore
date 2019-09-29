@@ -1,9 +1,14 @@
-.DS_Store
 .gradle/
-.idea
-**/build/
-*/.gradle/
-*/.idea/*
-**/out/
-**/logs/
+/lib/samples/
+
+# ignore wrapper files
+/gradle/
+/gradlew
+/gradlew.bat
+
+.DS_Store
+build/
+.idea/
+out/
+logs/
 corda-nodeinfo/corda-nodeinfo.iml

@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+     // classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
+        classpath 'com.palominolabs.gradle.task:gradle-git-clone-task:0.0.2'
+    }
+}
+
+ext {
+    samples_via_https = 'https://github.com/corda/samples.git'
+    samples_via_ssh = 'git@github.com:corda/samples.git'
+    samples_dir ='lib/samples' // 38M
+    samples_ref = '700d587'
+    dapp01obl = 'obligation-cordapp'
+}
+
+
+task cloneSamples(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
+    dir = file("$samples_dir")
+    uri = "$samples_via_https"
+    treeish = "$samples_ref"
+    reset = true  // = `git reset --hard`
+ // forceFetch = true
+    doLast {
+      println("commit $samples_ref checked-out in $samples_dir")
+      println("issue `git checkout -b \$branchName $samples_ref` if you need that")
+    }
+}
+
+task o2jars (type: Exec) {
+    dependsOn cloneSamples
+    doFirst {
+      println(">>>> Starting independent gradlew in ${samples_dir}/${dapp01obl}")
+    }
+    workingDir "${samples_dir}/${dapp01obl}"
+    commandLine './gradlew', 'jar'
+    doLast {
+      println(">>>> Independent gradlew in ${samples_dir}/${dapp01obl} finished")
+    }
+}
+
+wrapper {
+    gradleVersion = "5.5.1"
+    distributionType = Wrapper.DistributionType.ALL
+}

@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+//  dependencies {
+//      classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
+//  }
+}
+
+//   http://ajoberstar.org/grgit/grgit-authentication.html
+//   http://ajoberstar.org/grgit/grgit-gradle.html
+plugins {
+  id 'org.ajoberstar.grgit' version '3.1.1' apply false
+}
+import org.ajoberstar.grgit.Grgit
+
+ext {
+    samples_via_https = 'https://github.com/corda/samples.git'
+    samples_via_ssh = 'git@github.com:corda/samples.git'
+    samples_dir ='lib/samples'
+    samples_ref = '700d587'
+}
+
+task cloneSamples {  // 38M	lib/samples/
+    doFirst {
+        delete "$samples_dir"
+        Grgit.clone(dir: "$samples_dir", uri: "$samples_via_https")
+    }
+    doLast {
+        def xx = Grgit.open(dir: "$samples_dir")
+        def log = xx.log(maxCommits: 16)
+        log.each { println "${it.abbreviatedId} ${it.dateTime} ${it.author.email}" }
+    }
+}
+
+wrapper {
+    gradleVersion = "4.10.3"
+    distributionType = Wrapper.DistributionType.ALL
+}
