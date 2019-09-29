@@ -1,11 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'net.corda.plugins.cordapp'
-apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 
 cordapp {
-    targetPlatformVersion corda_platform_version.toInteger()
-    minimumPlatformVersion corda_platform_version.toInteger()
+    targetPlatformVersion corda_platform_version
+    minimumPlatformVersion corda_platform_version
     contract {
         name "Obligation CorDapp"
         vendor "Corda Open Source"
@@ -62,53 +61,4 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-parameters" // Required for shell commands.
-}
-
-task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
-    nodeDefaults {
-        cordapp("$corda_release_group:corda-finance-contracts:$corda_release_version")
-        cordapp("$corda_release_group:corda-finance-workflows:$corda_release_version")
-        cordapp("$corda_release_group:corda-confidential-identities:$corda_release_version")
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
-    }
-    node {
-        name "O=Notary,L=London,C=GB"
-        notary = [validating : false]
-        p2pPort 10002
-        rpcSettings {
-            address("localhost:10003")
-            adminAddress("localhost:10043")
-        }
-        projectCordapp {
-            deploy = false
-        }
-        cordapps.clear()
-    }
-    node {
-        name "O=PartyA,L=London,C=GB"
-        p2pPort 10005
-        rpcSettings {
-            address("localhost:10006")
-            adminAddress("localhost:10046")
-        }
-        webPort 10007
-    }
-    node {
-        name "O=PartyB,L=New York,C=US"
-        p2pPort 10008
-        rpcSettings {
-            address("localhost:10009")
-            adminAddress("localhost:10049")
-        }
-        webPort 10010
-    }
-    node {
-        name "O=PartyC,L=Paris,C=FR"
-        p2pPort 10011
-        rpcSettings {
-            address("localhost:10012")
-            adminAddress("localhost:10052")
-        }
-        webPort 10013
-    }
 }
