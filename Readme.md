@@ -15,5 +15,6 @@ cd obligation-cordapp && ./gradlew install
 gradle -q o2jars
 ```
 
+The first one was checked with Gradle 4.10.3, 5.6.2;
 The last one was checked with Gradle 4.10.3, 5.5.1, 5.6.2;
 Caveat: Gradle 4.10.3 cannot make wrapper of 5.5.1; Gradle 5.6.2 can.
