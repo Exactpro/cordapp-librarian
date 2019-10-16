@@ -8,4 +8,9 @@ This CorDapp comprises a demo of an IOU-like agreement that can be issued, trans
 
 The CorDapp allows you to issue, transfer (from old lender to new lender) and settle (with cash) obligations.
 
-# How to use that - TODO
+# How to use that
+
+Please see the [cordapp-harness](https://github.com/exactpro/cordapp-harness) project
+and its [README](https://github.com/exactpro/cordapp-harness/blob/4ea6605/README.md).
+
+TODO publish an example rpc-client.
