@@ -1,3 +1,8 @@
+// . ~/.ssh/bintray/${USER}.gradle
+// BINTRAY_USER=${USER}
+// BINTRAY_KEY=$(< ~/.ssh/bintray/${USER}.apikey)
+// BINTRAY_GPG_PASSPHRASE="abrakadabra foo bar"
+
 buildscript {
     ext {
         corda_release_group = "net.corda"
@@ -25,6 +30,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+}
+
 allprojects {
     apply from: "${rootProject.projectDir}/repositories.gradle"
     apply plugin: 'java'
@@ -50,6 +59,7 @@ def publishProjects = [
 
 configure(publishProjects) { subproject ->
     apply plugin: 'maven-publish'
+    apply plugin: 'com.jfrog.bintray'
 
     task sourceJar(type: Jar, dependsOn: subproject.classes) {
         classifier = 'sources'
@@ -75,6 +85,28 @@ configure(publishProjects) { subproject ->
 
                 pom {
                     description = subproject.description
+                }
+            }
+        }
+
+        bintray {
+            user = System.getenv('BINTRAY_USER')
+            key = System.getenv('BINTRAY_KEY')
+            publications = [subproject.name]
+            dryRun = false
+         // publish = true // [Default: false] publish to Maven Central ? after upload
+            pkg {
+                repo = 'cordapp-library'
+                name = subproject.name
+                userOrg = 'exactpro'
+                licenses = ['Apache-2.0']
+                vcsUrl = 'https://github.com/Exactpro/cordapp-librarian/tree/librarian/obligation-cordapp'
+
+                version {
+                    gpg {
+                        sign = true
+                        passphrase = System.getenv('BINTRAY_GPG_PASSPHRASE')
+                    }
                 }
             }
         }
