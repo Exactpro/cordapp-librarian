@@ -14,3 +14,9 @@ Please see the [cordapp-harness](https://github.com/exactpro/cordapp-harness) pr
 and its [README](https://github.com/exactpro/cordapp-harness/blob/4ea6605/README.md).
 
 TODO publish an example rpc-client.
+
+# Publishing
+
+```
+./gradlew obligation-j:bintrayUpload obligation-k:bintrayUpload
+```

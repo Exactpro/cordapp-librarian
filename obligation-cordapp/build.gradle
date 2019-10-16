@@ -78,7 +78,8 @@ configure(publishProjects) { subproject ->
             create(subproject.name, MavenPublication) {
                 from components.java
 
-                groupId subproject.group
+             // groupId subproject.group
+                groupId "$publish_groupId"
                 artifactId subproject.jar.baseName
                 artifact tasks.sourceJar
                 artifact tasks.javadocJar
@@ -94,7 +95,7 @@ configure(publishProjects) { subproject ->
             key = System.getenv('BINTRAY_KEY')
             publications = [subproject.name]
             dryRun = false
-         // publish = true // [Default: false] publish to Maven Central ? after upload
+            publish = true // [Default: false]
             pkg {
                 repo = 'cordapp-library'
                 name = subproject.name
