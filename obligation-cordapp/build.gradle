@@ -17,7 +17,6 @@ buildscript {
     }
 
     repositories {
-        mavenLocal()
         mavenCentral()
         jcenter()
         maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
@@ -53,8 +52,8 @@ allprojects {
 }
 
 def publishProjects = [
-        project(":obligation-j"),
-        project(":obligation-k")
+        project("obligation-j"),
+        project("obligation-k")
 ]
 
 configure(publishProjects) { subproject ->
@@ -62,12 +61,12 @@ configure(publishProjects) { subproject ->
     apply plugin: 'com.jfrog.bintray'
 
     task sourceJar(type: Jar, dependsOn: subproject.classes) {
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allSource
     }
 
     task javadocJar(type: Jar, dependsOn: subproject.javadoc) {
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc.destinationDir
     }
 
@@ -78,14 +77,23 @@ configure(publishProjects) { subproject ->
             create(subproject.name, MavenPublication) {
                 from components.java
 
-             // groupId subproject.group
                 groupId "$publish_groupId"
                 artifactId subproject.jar.baseName
                 artifact tasks.sourceJar
                 artifact tasks.javadocJar
 
                 pom {
-                    description = subproject.description
+                  description = subproject.description
+                  url = 'https://github.com/corda/samples/tree/release-V4/obligation-cordapp'
+                  scm {
+                    connection = 'scm:git:git@github.com:Exactpro/cordapp-librarian.git'
+                  }
+                  licenses {
+                    license {
+                      name = 'The Apache License, Version 2.0'
+                      url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                  }
                 }
             }
         }
